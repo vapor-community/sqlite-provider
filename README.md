@@ -1,10 +1,10 @@
-# MySQL Provider for Vapor
+# SQLite Provider for Vapor
 
-Adds MySQL support to the Vapor web framework.
+Adds SQLite support to the Vapor web framework.
 
 
 ```swift
-let mysql = try VaporMySQL.Provider(host: "localhost", user: "root", password: "", database: "birdwatcher")
+let sqlite = try VaporSQLite.Provider(database: "/path/to/database")
 
-let app = Application(providers: [mysql])
+let app = Application(providers: [sqlite])
 ```
