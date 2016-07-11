@@ -1,11 +1,10 @@
 #if os(Linux)
 
 import XCTest
-@testable import FluentMySQLTestSuite
+@testable import VaporSQLiteTestSuite
 
 XCTMain([
-    testCase(MySQLTests.allTests),
-    testCase(MySQLDriverTests.allTests),
+    testCase(SQLiteTests.allTests),
 ])
 
 #endif

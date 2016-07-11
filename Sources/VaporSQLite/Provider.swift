@@ -1,7 +1,7 @@
 import Vapor
-import FluentMySQL
+import FluentSQLite
 
-public typealias MySQLDriver = FluentMySQL.MySQLDriver
+public typealias MySQLDriver = FluentSQLite.SQLiteDriver
 
 public final class Provider: Vapor.Provider {
     /**
@@ -36,21 +36,9 @@ public final class Provider: Vapor.Provider {
         `mysql_real_connect()` fails.
     */
     public init(
-        host: String,
-        user: String,
-        password: String,
-        database: String,
-        port: UInt = 3306,
-        flag: UInt = 0
+        path: String
     ) throws {
-        let driver = try MySQLDriver(
-            host: host,
-            user: user,
-            password: password,
-            database: database,
-            port: port,
-            flag: flag
-        )
+        let driver = try SQLiteDriver(path: path)
 
         self.driver = driver
         self.database = driver
