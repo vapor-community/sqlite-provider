@@ -1,4 +1,4 @@
-# Fluent SQLite 
+# Vapor SQLite 
 
 Adds SQLite support to the Vapor web framework.
 
