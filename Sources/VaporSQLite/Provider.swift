@@ -7,7 +7,7 @@ public final class Provider: Vapor.Provider {
     /**
         MySQL database driver created by the provider.
     */
-    public let driver: MySQLDriver
+    public let driver: SQLiteDriver
 
     /**
         MySQL database created by the provider.
