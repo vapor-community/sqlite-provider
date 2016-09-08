@@ -2,22 +2,28 @@
 
 Adds SQLite support to the Vapor web framework.
 
-
 ## Install
 
 ```swift
 import Vapor
 import VaporSQLite
 
-let sqlite = try VaporSQLite.Provider(path: "/path/to/database.sqlite")
-
-let drop = Droplet(providers: [sqlite])
+let drop = Droplet(preparations:[User.self], providers:[VaporSQLite.Provider.self])
 ```
+
+## Config
+Be sure to have a `sqlite.json` config file in your Config directory
+```json
+{
+  "path": "Database/main.sqlite"
+}
+```
+
 
 ## Raw Queries
 
 ```swift
-let result = try! sql.driver.raw("SELECT sqlite_version()")
+let result = try drop.database?.driver.raw("SELECT sqlite_version()")
 print(result)
 ```
 
