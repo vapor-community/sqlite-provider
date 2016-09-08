@@ -5,7 +5,7 @@ import Vapor
 
 class SQLiteTests: XCTestCase {
     static let allTests = [
-        ("testReality", testReality)
+        ("testProviderWithPathInit", testProviderWithPathInit)
     ]
     
     override func setUp() {
@@ -17,13 +17,33 @@ class SQLiteTests: XCTestCase {
         
     }
     
-    func testProviderWithPathInit throws {
+    
+    func testProviderWithPathInit() throws {
         
         let sqliteProvider = try Provider(path: "database.db")
         
-        let droplet = Droplet(initializedProviders: [sqliteProvider])
         
-        var user = User(name: "Jordy")
+        
+        let drop = Droplet(initializedProviders: [sqliteProvider])
+        XCTAssertNotNil(drop.database)
+        
+        try testBasicFluentOperations(droplet:drop)
+    }
+    
+    func testProviderWithConfigInit() throws {
+        
+        let configuration = try Config(node: ["sqlite": ["path": "database.db"]])
+        
+        let sqliteProvider = try Provider(config: configuration)
+        let drop = Droplet(initializedProviders:[sqliteProvider])
+        XCTAssertNotNil(drop.database)
+        
+        try testBasicFluentOperations(droplet:drop)
+        
+    }
+    
+    func testBasicFluentOperations(droplet:Droplet) throws {
+        var user = User(name: "Pablo")
         User.database = droplet.database
         try user.save()
         
@@ -31,3 +51,4 @@ class SQLiteTests: XCTestCase {
         XCTAssertEqual(user.name, fetched?.name)
     }
 }
+
