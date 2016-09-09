@@ -4,6 +4,13 @@ import FluentSQLite
 public typealias MySQLDriver = FluentSQLite.SQLiteDriver
 
 public final class Provider: Vapor.Provider {
+    public var provided: Providable
+
+    
+    public enum Error:Swift.Error {
+        case noSQLiteConfig
+        case pathMissing
+    }
     /**
         MySQL database driver created by the provider.
     */
@@ -12,36 +19,39 @@ public final class Provider: Vapor.Provider {
     /**
         MySQL database created by the provider.
     */
-    public let database: DatabaseDriver?
+    public let database: Database?
 
-    /**
-        Attempts to establish a connection to a MySQL database
-        engine running on host.
-
-        - parameter host: May be either a host name or an IP address.
-        If host is the string "localhost", a connection to the local host is assumed.
-        - parameter user: The user's MySQL login ID.
-        - parameter password: Password for user.
-        - parameter database: Database name.
-        The connection sets the default database to this value.
-        - parameter port: If port is not 0, the value is used as
-        the port number for the TCP/IP connection.
-        - parameter socket: If socket is not NULL,
-        the string specifies the socket or named pipe to use.
-        - parameter flag: Usually 0, but can be set to a combination of the
-        flags at http://dev.mysql.com/doc/refman/5.7/en/mysql-real-connect.html
-
-
-        - throws: `Error.connection(String)` if the call to
-        `mysql_real_connect()` fails.
-    */
     public init(
         path: String
     ) throws {
         let driver = try SQLiteDriver(path: path)
+        let database = Database(driver)
 
         self.driver = driver
-        self.database = driver
+        self.database = database
+        
+        provided = Providable(database: database)
+    }
+    
+    public convenience init(config: Config) throws {
+        guard let sqlite = config["sqlite"]?.object else {
+            throw Error.noSQLiteConfig
+        }
+        
+        guard let path = sqlite["path"]?.string else {
+            throw Error.pathMissing
+        }
+        
+        try self.init(path: path)
+        
+    }
+    
+    public func afterInit(_: Droplet) {
+        //
+    }
+    
+    public func beforeServe(_: Droplet) {
+        //
     }
 
     public func boot(with droplet: Droplet) { }
