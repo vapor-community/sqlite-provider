@@ -60,25 +60,19 @@ class SQLiteTests: XCTestCase {
      */
     
     func testDropRun() throws {
-        let droplet = Droplet(arguments:[])
+        let sqliteProvider = try Provider(path: "database.db")
+        let droplet = Droplet(arguments:[], initializedProviders:[sqliteProvider])
 
         XCTAssertThrowsError(try droplet.runCommands()) { error in
-            //ensure error type
+            //ensure error type is CommandError
             guard let generalError = error as? Vapor.CommandError else {
                 XCTFail()
                 return
             }
-            
             //ensure error is .general and message is `No executable.`
-            switch(generalError) {
-            case .general(let message):
+            if case let .general(message) = generalError {
                 XCTAssertTrue(message == "No executable.")
-                break
-            default:
-                XCTFail()
-                break
             }
-            
         }
     }
 }
