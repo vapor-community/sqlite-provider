@@ -1,4 +1,4 @@
-# Vapor SQLite 
+# Vapor SQLite
 
 Adds SQLite support to the Vapor web framework.
 
@@ -12,10 +12,10 @@ let drop = Droplet(preparations:[User.self], providers:[VaporSQLite.Provider.sel
 ```
 
 ## Config
-Be sure to have a `sqlite.json` config file in your Config directory
+Be sure to have a `sqlite.json` config file in your Config directory, you need to make sure an absolute path is set if run from Xcode
 ```json
 {
-  "path": "Database/main.sqlite"
+  "path": "/absolute/path/to/database.sqlite"
 }
 ```
 
