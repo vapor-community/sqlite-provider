@@ -50,9 +50,8 @@ public final class Provider: Vapor.Provider {
         //
     }
     
-    public func beforeServe(_: Droplet) {
+    public func beforeRun(_: Droplet) {
         //
     }
 
-    public func boot(with droplet: Droplet) { }
 }

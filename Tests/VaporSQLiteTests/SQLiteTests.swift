@@ -28,6 +28,7 @@ class SQLiteTests: XCTestCase {
         XCTAssertNotNil(drop.database)
         
         try testBasicFluentOperations(droplet:drop)
+        
     }
     
     func testProviderWithConfigInit() throws {
@@ -39,7 +40,6 @@ class SQLiteTests: XCTestCase {
         XCTAssertNotNil(drop.database)
         
         try testBasicFluentOperations(droplet:drop)
-        
     }
     
     func testBasicFluentOperations(droplet:Droplet) throws {
@@ -49,6 +49,31 @@ class SQLiteTests: XCTestCase {
         
         let fetched = try User.find(1)
         XCTAssertEqual(user.name, fetched?.name)
+    }
+    
+    /** 
+     
+     Call to function Provider.beforeRun() without
+     providing any executable to run with `arguments:[]`
+     hence not running an entire vapor server
+     
+     */
+    
+    func testDropRun() throws {
+        let sqliteProvider = try Provider(path: "database.db")
+        let droplet = Droplet(arguments:[], initializedProviders:[sqliteProvider])
+
+        XCTAssertThrowsError(try droplet.runCommands()) { error in
+            //ensure error type is CommandError
+            guard let generalError = error as? Vapor.CommandError else {
+                XCTFail()
+                return
+            }
+            //ensure error is .general and message is `No executable.`
+            if case let .general(message) = generalError {
+                XCTAssertTrue(message == "No executable.")
+            }
+        }
     }
 }
 
