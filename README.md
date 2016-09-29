@@ -32,7 +32,7 @@ print(result)
 ### OS X
 
 ```shell
-brew install sqlite3 libsqlite3-dev
+brew install sqlite3
 ```
 
 ### Linux
