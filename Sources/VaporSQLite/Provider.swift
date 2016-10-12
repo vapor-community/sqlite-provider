@@ -1,8 +1,6 @@
 import Vapor
 import FluentSQLite
 
-public typealias MySQLDriver = FluentSQLite.SQLiteDriver
-
 public final class Provider: Vapor.Provider {
 
     
@@ -10,6 +8,10 @@ public final class Provider: Vapor.Provider {
         case noSQLiteConfig
         case pathMissing
     }
+    
+    private(set) public var driver: SQLiteDriver!
+    
+    private(set) public var database: Database!
     
     private let path:String
     
@@ -31,8 +33,10 @@ public final class Provider: Vapor.Provider {
         guard let driver = try? SQLiteDriver(path: drop.workDir+self.path) else {
             return
         }
-                
-        let database = Database(driver)
+        
+        self.driver = driver
+        self.database = Database(driver)
+        
         drop.database = database
     }
     

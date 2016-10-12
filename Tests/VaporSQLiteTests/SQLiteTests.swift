@@ -14,6 +14,7 @@ class SQLiteTests: XCTestCase {
         
         let sqliteProvider = try Provider(config: configuration)
         let drop = Droplet()
+        
         drop.addProvider(sqliteProvider)
         XCTAssertNotNil(drop.database)
         
