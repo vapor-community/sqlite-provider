@@ -31,6 +31,7 @@ public final class Provider: Vapor.Provider {
     public func boot(_ drop: Droplet) {
         
         guard let driver = try? SQLiteDriver(path: drop.workDir+self.path) else {
+            self.driver = nil
             return
         }
         
