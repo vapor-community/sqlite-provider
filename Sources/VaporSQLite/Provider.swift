@@ -13,24 +13,31 @@ public final class Provider: Vapor.Provider {
     
     private(set) public var database: Database!
     
-    private let path:String
+    private let configuredPath: String
     
     public init(config: Config) throws {
         guard let sqlite = config["sqlite"]?.object else {
             throw Error.noSQLiteConfig
         }
         
-        guard let path = sqlite["path"]?.string else {
+        guard let configuredPath = sqlite["path"]?.string else {
             throw Error.pathMissing
         }
         
-        self.path = path
+        self.configuredPath = configuredPath
         
     }
     
     public func boot(_ drop: Droplet) {
         
-        guard let driver = try? SQLiteDriver(path: drop.workDir+self.path) else {
+        let path: String
+        if configuredPath.hasPrefix("/") {
+            path = configuredPath
+        } else {
+            path = drop.workDir + configuredPath
+        }
+        
+        guard let driver = try? SQLiteDriver(path: path) else {
             return
         }
         
