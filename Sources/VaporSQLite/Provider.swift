@@ -38,6 +38,8 @@ public final class Provider: Vapor.Provider {
         }
         
         guard let driver = try? SQLiteDriver(path: path) else {
+            self.driver = nil
+
             return
         }
         
