@@ -9,10 +9,6 @@ public final class Provider: Vapor.Provider {
         case pathMissing
     }
     
-    private(set) public var driver: SQLiteDriver!
-    
-    private(set) public var database: Database!
-    
     private let configuredPath: String
     
     public init(config: Config) throws {
@@ -38,15 +34,10 @@ public final class Provider: Vapor.Provider {
         }
         
         guard let driver = try? SQLiteDriver(path: path) else {
-            self.driver = nil
-
             return
         }
         
-        self.driver = driver
-        self.database = Database(driver)
-        
-        drop.database = database
+        drop.database = Database(driver)
     }
     
     public func afterInit(_: Droplet) {

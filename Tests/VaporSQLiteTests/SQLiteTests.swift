@@ -12,10 +12,9 @@ class SQLiteTests: XCTestCase {
         ("testFailingConfig", testFailingConfig)
         ]
 
-    func testProviderBoot(path: String) throws {
-        let configuration = try Config(node: ["sqlite": ["path": path.makeNode()]])
+    func testProviderBoot(config: Config) throws {
 
-        let sqliteProvider = try Provider(config: configuration)
+        let sqliteProvider = try Provider(config: config)
         let drop = Droplet()
         drop.addProvider(sqliteProvider)
         XCTAssertNotNil(drop.database)
@@ -27,12 +26,15 @@ class SQLiteTests: XCTestCase {
         let defaultManager = FileManager.default
         let absolutePath = defaultManager.currentDirectoryPath.finished(with: "/absolute.sqlite")
         XCTAssert(absolutePath.hasPrefix("/"))
-        try testProviderBoot(path: absolutePath)
+        
+        let absolutePathConfig = try Config(node: ["sqlite": ["path": absolutePath.makeNode()]])
+        try testProviderBoot(config: absolutePathConfig)
     }
 
     func testRelativePath() throws {
         let relativePath = "relative.sqlite"
-        try testProviderBoot(path: relativePath)
+        let relativePathConfig = try Config(node: ["sqlite": ["path": relativePath.makeNode()]])
+        try testProviderBoot(config: relativePathConfig)
     }
 
     func testFailingConfig() throws {
@@ -42,23 +44,23 @@ class SQLiteTests: XCTestCase {
         let pathNonExistentConfig = try Config(node:["sqlite": ["path": "Database/main.sqlite"]]) //Database folder doesn't exist
 
         //noSqliteConfig error should be thrown since there is no `sqlite` config file
-        XCTAssertThrowsError(try Provider(config: noSqliteConfig)) { error in
+        XCTAssertThrowsError(try testProviderBoot(config: noSqliteConfig)) { error in
             if let providerError = error as? VaporSQLite.Provider.Error {
                 XCTAssert(providerError == VaporSQLite.Provider.Error.noSQLiteConfig)
             }
         }
 
         //noSqlitePathConfig should be thrown since there is no `path` key provided
-        XCTAssertThrowsError(try Provider(config: noSqlitePathConfig)) { error in
+        XCTAssertThrowsError(try testProviderBoot(config: noSqlitePathConfig)) { error in
             if let providerError = error as? VaporSQLite.Provider.Error {
                 XCTAssert(providerError == VaporSQLite.Provider.Error.pathMissing)
             }
         }
 
         //driver initialization should fail since the path provided does not exist
-        let driverEmpty = try Provider(config: pathNonExistentConfig)
+        let driverErrorProvider = try Provider(config: pathNonExistentConfig)
         let droplet = Droplet()
-        droplet.addProvider(driverEmpty)
-        XCTAssertNil(driverEmpty.driver)
+        droplet.addProvider(driverErrorProvider)
+        XCTAssertNil(droplet.database)
     }
 }
