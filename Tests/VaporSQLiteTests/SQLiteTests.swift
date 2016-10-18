@@ -3,6 +3,8 @@ import XCTest
 import Fluent
 import Vapor
 
+import Foundation
+
 class SQLiteTests: XCTestCase {
     static let allTests = [
         ("testAbsolutePath", testAbsolutePath),
@@ -32,7 +34,7 @@ class SQLiteTests: XCTestCase {
         let relativePath = "relative.sqlite"
         try testProviderBoot(path: relativePath)
     }
-    
+
     func testFailingConfig() throws {
         //Configs reflecting possible error implemented in the provider
         let noSqliteConfig = try Config(node:["not-sqlite"])
@@ -45,7 +47,7 @@ class SQLiteTests: XCTestCase {
                 XCTAssert(providerError == VaporSQLite.Provider.Error.noSQLiteConfig)
             }
         }
-        
+
         //noSqlitePathConfig should be thrown since there is no `path` key provided
         XCTAssertThrowsError(try Provider(config: noSqlitePathConfig)) { error in
             if let providerError = error as? VaporSQLite.Provider.Error {
