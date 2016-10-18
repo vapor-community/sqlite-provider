@@ -8,14 +8,15 @@ Adds SQLite support to the Vapor web framework.
 import Vapor
 import VaporSQLite
 
-let drop = Droplet(preparations:[User.self], providers:[VaporSQLite.Provider.self])
+let drop = Droplet()
+drop.addProvider(VaporSQLite.Provider.self)
 ```
 
 ## Config
-Be sure to have a `sqlite.json` config file in your Config directory, you need to make sure an absolute path is set if run from Xcode
+Be sure to have a `sqlite.json` config file in your Config directory, the path is set relatively from the Droplet's working directory
 ```json
 {
-  "path": "/absolute/path/to/database.sqlite"
+  "path": "/path/to/database.sqlite"
 }
 ```
 
