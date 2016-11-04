@@ -9,7 +9,7 @@ import Vapor
 import VaporSQLite
 
 let drop = Droplet()
-drop.addProvider(VaporSQLite.Provider.self)
+try drop.addProvider(VaporSQLite.Provider.self)
 ```
 
 ## Config
